@@ -49,6 +49,8 @@ class User(Resource):
 
 
     def put(self, name):
+        if not name.isalpha():
+            return output_message("Name contains not only letters"), 404
         parser = reqparse.RequestParser()
         parser.add_argument("dateOfBirth")
         args = parser.parse_args()
@@ -64,7 +66,7 @@ class User(Resource):
             cursor.execute("insert into users (name, dob) values ((%s), (%s))", [name, args["dateOfBirth"]])
             connection.commit()
         except:
-            return output_message("Something goes wrong with database"), 500
+            return output_message("You can not execute this query"), 500
 
         return '', 201
 

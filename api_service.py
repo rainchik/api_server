@@ -12,11 +12,6 @@ def str_to_date(string_date):
     return output
 
 
-def date_converter(o):
-    if isinstance(o, datetime.date):
-        return o.strftime('%Y-%m-%d')
-
-
 def output_message(message):
     output_json = {
         "message": message

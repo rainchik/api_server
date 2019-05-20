@@ -6,13 +6,6 @@ import psycopg2
 app = Flask(__name__)
 api = Api(app)
 
-users = [
-    {
-        "name": "Nic",
-        "dateOfBirth": "1989-03-03"
-    }
-]
-
 def str_to_date(string_date):
     output = datetime.datetime.strptime(string_date, '%Y-%m-%d')
     return(output)
@@ -40,21 +33,6 @@ class User(Resource):
             return output_message("Something goes wrong with database"), 500
         if record is None:
             return output_message("User not found"), 404
-
-        # print(record)
-        # record_list = list(record)
-        # colnames = [desc[0] for desc in cursor.description]
-        #
-        # user_json = {}
-        # for i in range(len(colnames)):
-        #     if isinstance(record_list[i], datetime.date):
-        #         record_list[i] = record_list[i].strftime('%Y-%m-%d')
-        #
-        #     user_json[colnames[i]] = record_list[i]
-        #
-        # print((record[1]))
-        # now = str_to_date(datetime.datetime.now().strftime("%Y-%m-%d"))
-        # print((now))
 
         today_date = datetime.date.today()
         users_date = record[1]

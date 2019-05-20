@@ -2,6 +2,8 @@ from flask import Flask
 from flask_restful import Api, Resource, reqparse
 import datetime
 import psycopg2
+import json
+from bson import json_util
 
 app = Flask(__name__)
 api = Api(app)
@@ -17,15 +19,37 @@ def str_to_date(string_date):
     output = datetime.datetime.strptime(string_date, '%Y-%m-%d')
     return(output)
 
+
+def date_converter(o):
+    if isinstance(o, datetime.date):
+        return o.strftime('%Y-%m-%d')
+
 class User(Resource):
     def get(self, name):
         if not name.isalpha():
             return "Name contains not only letters", 404
 
-        for user in users:
-            if(name == user["name"]):
-                return user, 200
-        return "User not found", 404
+        cursor.execute("select * from users where name = (%s)", [name])
+        record = cursor.fetchone()
+        record_list = list(record)
+        colnames = [desc[0] for desc in cursor.description]
+
+        user_json = {}
+        for i in range(len(colnames)):
+            if isinstance(record_list[i], datetime.date):
+                record_list[i] = record_list[i].strftime('%Y-%m-%d')
+
+            user_json[colnames[i]] = record_list[i]
+
+
+        print((record[1]))
+        now = str_to_date(datetime.datetime.now().strftime("%Y-%m-%d"))
+        print((now))
+
+        return user_json, 200
+
+
+        # return "User not found", 404
 
     def put(self, name):
         parser = reqparse.RequestParser()
@@ -57,14 +81,19 @@ try:
     record = cursor.fetchone()
     print("You are connected to - ", record,"\n")
 
-    api.add_resource(User, "/hello/<string:name>")
-    app.run(debug=True)
+
 
 except (Exception, psycopg2.Error) as error :
     print ("Error while connecting to PostgreSQL", error)
-finally:
-    #closing database connection.
-        if(connection):
-            cursor.close()
-            connection.close()
-            print("PostgreSQL connection is closed")
+    exit()
+
+
+api.add_resource(User, "/hello/<string:name>")
+app.run(debug=False)
+
+# finally:
+#     #closing database connection.
+if(connection):
+    cursor.close()
+    connection.close()
+    print("PostgreSQL connection is closed")

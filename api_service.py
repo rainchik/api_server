@@ -21,7 +21,6 @@ def output_message(output_message):
     }
     return output_json
 
-
 class User(Resource):
     def get(self, name):
         if not name.isalpha():

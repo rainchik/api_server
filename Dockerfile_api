@@ -1,0 +1,4 @@
+FROM rainchik/flask
+COPY ./api_service.py /api_service.py
+ENTRYPOINT ["python"]
+CMD ["./api_service.py"]  

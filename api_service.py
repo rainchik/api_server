@@ -75,9 +75,9 @@ class User(Resource):
 
 
 try:
-    connection = psycopg2.connect(user="postgres",
-                                  password="",
-                                  host="127.0.0.1",
+    connection = psycopg2.connect(user="apiappuser",
+                                  password="queimu6Peichohbeivur",
+                                  host="apiapp.c2hfx5olhmew.us-east-1.rds.amazonaws.com",
                                   port="5432",
                                   database="api_db")
     cursor = connection.cursor()
@@ -86,7 +86,7 @@ try:
     print("You are connected to - ", record, "\n")
 
     api.add_resource(User, "/hello/<string:name>")
-    app.run(debug=False)
+    app.run(host='0.0.0.0', debug=False)
 
 except (Exception, psycopg2.Error) as error:
     print("Error while connecting to PostgreSQL", error)

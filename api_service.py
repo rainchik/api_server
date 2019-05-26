@@ -2,9 +2,8 @@ from flask import Flask
 from flask_restful import Api, Resource, reqparse
 import datetime
 import psycopg2
-
-app = Flask(__name__)
-api = Api(app)
+import argparse
+import configparser
 
 
 def str_to_date(string_date):
@@ -74,19 +73,29 @@ class User(Resource):
         return '', 201
 
 
+app = Flask(__name__)
+api = Api(app)
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--config', type=str, help='Path to db creds file', required=True)
+
+args = vars(parser.parse_args())
+db_settings = configparser.ConfigParser()
+db_settings.read(args["config"])
+
 try:
-    connection = psycopg2.connect(user="apiappuser",
-                                  password="queimu6Peichohbeivur",
-                                  host="apiapp.c2hfx5olhmew.us-east-1.rds.amazonaws.com",
-                                  port="5432",
-                                  database="api_db")
+    connection = psycopg2.connect(user=db_settings['Database']['user'],
+                                  password=db_settings['Database']['password'],
+                                  host=db_settings['Database']['host'],
+                                  port=db_settings['Database']['port'],
+                                  database=db_settings['Database']['database'])
     cursor = connection.cursor()
     cursor.execute("SELECT version();")
     record = cursor.fetchone()
     print("You are connected to - ", record, "\n")
 
     api.add_resource(User, "/hello/<string:name>")
-    app.run(host='0.0.0.0', debug=False)
+    app.run(host='0.0.0.0', debug=True)
 
 except (Exception, psycopg2.Error) as error:
     print("Error while connecting to PostgreSQL", error)

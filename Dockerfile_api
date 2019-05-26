@@ -1,4 +1,5 @@
 FROM rainchik/flask
-COPY ./api_service.py /api_service.py
+COPY ./api_service.py /
+COPY ./db_settings.ini /
 ENTRYPOINT ["python"]
-CMD ["./api_service.py"]  
+CMD ["./api_service.py", "--config", "./db_settings.ini"]

@@ -2,6 +2,9 @@
 This repo contains codebase for test deploy to Kubernetes service.
 In this case we use AWS EKS, but we can use any Kubernetes realisation.
 
+![Alt text](/aws_api_service.png?raw=true "Solution Diagram")
+
+
 ## Preinstalled environment:
 - Kubernetes
 - Jenkins with Kubenetes credetials, installed git and docker services
